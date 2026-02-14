@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiny Things</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="site-title">tiny things<span class="dot">.</span></h1>
+            <p class="site-description">
+                A collection of small prototypes, tools, and experiments — built while learning to make things with
+                <span class="mono">AI</span> tools.
+            </p>
+            <div class="counter">
+                <span class="counter-dot"></span>
+                <span id="project-count">0</span> things and counting
+            </div>
+        </header>
+
+        <section class="projects">
+            <!-- Project 1: Dogear -->
+            <div class="project-card">
+                <div class="project-thumbnail">
+                    <span class="placeholder-icon">📖</span>
+                </div>
+                <div class="project-info">
+                    <div class="project-number">No. 01</div>
+                    <h2 class="project-title">Dogear</h2>
+                    <p class="project-description">A book recommendation app. Find your next read based on what you've loved before.</p>
+                    <div class="project-meta">
+                        <span class="tag tool">Lovable</span>
+                        <span class="tag">prototype</span>
+                    </div>
+                    <a href="https://dogear-book-recommendations.lovable.app" target="_blank" class="project-link">View project</a>
+                </div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="project-card empty">
+                <div class="empty-content">
+                    <div class="plus">+</div>
+                    <p>your first tiny thing goes here</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="notes-section">
+            <h3 class="notes-title">What is this?</h3>
+            <p class="notes-content">
+                I'm a product designer experimenting with AI tools to build real things.
+                This site is where I collect the small prototypes and experiments I make along the way.
+                Nothing here is polished — that's the point.
+            </p>
+        </section>
+
+        <footer>
+            <p>tiny things — 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        // Count actual projects (not empty state)
+        const projectCount = document.querySelectorAll('.project-card:not(.empty)').length;
+        document.getElementById('project-count').textContent = projectCount;
+    </script>
+</body>
+</html>
