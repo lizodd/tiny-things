@@ -90,7 +90,6 @@ header {
 .site-description {
     font-size: 1.1rem;
     color: var(--text-light);
-    max-width: 500px;
     line-height: 1.6;
     margin-top: 20px;
 }
