@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cold Open</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Anybody:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #D2FF3A;
+            --text: #1A0BF5;
+            --accent: #FF2D6B;
+            --white: #FFFEF5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+            user-select: none;
+            cursor: crosshair;
+        }
+
+        /* Header */
+        header {
+            padding: 24px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: 'Anybody', sans-serif;
+            font-weight: 900;
+            font-style: italic;
+            font-size: 1.6rem;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            line-height: 1;
+        }
+
+        .back-link {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text);
+            text-decoration: none;
+            opacity: 0.6;
+            transition: opacity 0.15s ease;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .counter-badge {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            background: var(--text);
+            color: var(--bg);
+            padding: 6px 14px;
+            border-radius: 100px;
+            letter-spacing: 0.05em;
+        }
+
+        /* Main content */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 50px;
+            position: relative;
+        }
+
+        /* Question display */
+        .question-container {
+            text-align: center;
+            max-width: 900px;
+            position: relative;
+        }
+
+        .question-text {
+            font-family: 'Anybody', sans-serif;
+            font-weight: 900;
+            font-style: italic;
+            font-size: clamp(3rem, 8vw, 7rem);
+            line-height: 0.95;
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+            color: var(--text);
+            transition: opacity 0.15s ease, transform 0.15s ease;
+        }
+
+        .question-text.exiting {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .question-text.entering {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        /* Decorative accent line */
+        .accent-line {
+            width: 60px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 3px;
+            margin: 0 auto 32px;
+        }
+
+        /* Category tag */
+        .category {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            background: var(--accent);
+            color: var(--white);
+            padding: 6px 16px;
+            border-radius: 100px;
+            margin-bottom: 40px;
+            transition: opacity 0.15s ease;
+        }
+
+        .category.exiting {
+            opacity: 0;
+        }
+
+        /* Navigation */
+        nav {
+            padding: 24px 50px 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: 3px solid var(--text);
+            background: transparent;
+            color: var(--text);
+            padding: 14px 32px;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn:hover {
+            background: var(--text);
+            color: var(--bg);
+        }
+
+        .nav-btn:active {
+            transform: scale(0.96);
+        }
+
+        .nav-btn.primary {
+            background: var(--text);
+            color: var(--bg);
+            padding: 14px 40px;
+            font-size: 0.95rem;
+        }
+
+        .nav-btn.primary:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--white);
+        }
+
+        .shuffle-btn {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            padding: 10px 16px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.15s ease;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .shuffle-btn:hover {
+            opacity: 1;
+        }
+
+        /* Floating decorative elements */
+        .deco {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .deco-circle {
+            width: 300px;
+            height: 300px;
+            border: 4px solid var(--text);
+            border-radius: 50%;
+            opacity: 0.06;
+            top: -80px;
+            right: -80px;
+        }
+
+        .deco-circle-2 {
+            width: 200px;
+            height: 200px;
+            border: 4px solid var(--accent);
+            border-radius: 50%;
+            opacity: 0.08;
+            bottom: 40px;
+            left: -60px;
+        }
+
+        .deco-star {
+            font-size: 8rem;
+            opacity: 0.04;
+            bottom: 60px;
+            right: 40px;
+            color: var(--text);
+            animation: spin 20s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Keyboard hint */
+        .hint {
+            position: fixed;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text);
+            opacity: 0.2;
+        }
+
+        .hint kbd {
+            display: inline-block;
+            background: var(--text);
+            color: var(--bg);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.6rem;
+            margin: 0 2px;
+        }
+
+        /* Color shift on theme change */
+        body.theme-1 {
+            --bg: #D2FF3A;
+            --text: #1A0BF5;
+            --accent: #FF2D6B;
+        }
+
+        body.theme-2 {
+            --bg: #FF2D6B;
+            --text: #FFFEF5;
+            --accent: #D2FF3A;
+        }
+
+        body.theme-3 {
+            --bg: #1A0BF5;
+            --text: #D2FF3A;
+            --accent: #FF2D6B;
+        }
+
+        body.theme-4 {
+            --bg: #FFFEF5;
+            --text: #1A0BF5;
+            --accent: #FF2D6B;
+        }
+
+        body.theme-5 {
+            --bg: #FF8C00;
+            --text: #1A0044;
+            --accent: #D2FF3A;
+        }
+
+        body {
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        .logo, .question-text, .counter-badge, .nav-btn, .category, .hint, .shuffle-btn, .back-link {
+            transition: all 0.4s ease;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 20px 24px;
+            }
+
+            main {
+                padding: 24px;
+            }
+
+            nav {
+                padding: 20px 24px 28px;
+                flex-wrap: wrap;
+            }
+
+            .nav-btn {
+                padding: 12px 24px;
+                font-size: 0.8rem;
+            }
+
+            .nav-btn.primary {
+                padding: 12px 32px;
+                font-size: 0.85rem;
+            }
+
+            .hint {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 16px 20px;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            nav {
+                padding: 16px 20px 24px;
+            }
+
+            .question-text {
+                font-size: clamp(2rem, 10vw, 4rem);
+            }
+        }
+    </style>
+</head>
+<body class="theme-1">
+
+    <!-- Decorative elements -->
+    <div class="deco deco-circle"></div>
+    <div class="deco deco-circle-2"></div>
+    <div class="deco deco-star">✹</div>
+
+    <header>
+        <div class="logo">Cold Open</div>
+        <a href="../../index.html" class="back-link">← Back</a>
+        <div class="counter-badge" id="counter">1 / 30</div>
+    </header>
+
+    <main>
+        <div class="question-container">
+            <div class="category" id="category">Getting Started</div>
+            <div class="accent-line"></div>
+            <div class="question-text" id="question">What's something you changed your mind about recently?</div>
+        </div>
+    </main>
+
+    <nav>
+        <button class="nav-btn" id="prevBtn" onclick="prevQuestion()">← Prev</button>
+        <button class="nav-btn primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+        <button class="shuffle-btn" onclick="shuffleQuestions()">Shuffle</button>
+    </nav>
+
+    <div class="hint">
+        <kbd>←</kbd> <kbd>→</kbd> to navigate · <kbd>S</kbd> to shuffle
+    </div>
+
+    <script>
+        const questions = [
+            { q: "What's something you changed your mind about recently?", cat: "Getting Started" },
+            { q: "What's the worst advice you've ever received?", cat: "Getting Started" },
+            { q: "What's a hill you will die on?", cat: "Spicy" },
+            { q: "What's your most unpopular opinion?", cat: "Spicy" },
+            { q: "If you could only eat one cuisine for the rest of your life, what would it be?", cat: "Classics" },
+            { q: "What's a skill you'd love to learn but haven't started?", cat: "Getting Started" },
+            { q: "What's the last thing that made you laugh until you cried?", cat: "Vibes" },
+            { q: "What's your go-to karaoke song?", cat: "Vibes" },
+            { q: "What's a movie you can quote from start to finish?", cat: "Classics" },
+            { q: "What would your entrance music be?", cat: "Vibes" },
+            { q: "What's the most overrated thing in your industry?", cat: "Spicy" },
+            { q: "What's a random fact you know that impresses people at parties?", cat: "Classics" },
+            { q: "If you had to teach a class on any topic, what would it be?", cat: "Deep Cuts" },
+            { q: "What's the best purchase you've made under $50?", cat: "Classics" },
+            { q: "What's something you're weirdly competitive about?", cat: "Vibes" },
+            { q: "What's a conspiracy theory you find entertaining?", cat: "Spicy" },
+            { q: "What did you want to be when you grew up?", cat: "Deep Cuts" },
+            { q: "What's the most interesting rabbit hole you've gone down recently?", cat: "Deep Cuts" },
+            { q: "What's your toxic trait?", cat: "Spicy" },
+            { q: "If you could have dinner with anyone, living or dead, who would it be?", cat: "Deep Cuts" },
+            { q: "What's something that's on your bucket list?", cat: "Getting Started" },
+            { q: "What's the best concert or live event you've ever been to?", cat: "Vibes" },
+            { q: "What would you do with an extra hour every day?", cat: "Deep Cuts" },
+            { q: "What's a trend you don't understand?", cat: "Spicy" },
+            { q: "What's the most spontaneous thing you've ever done?", cat: "Vibes" },
+            { q: "What's the weirdest food combination you love?", cat: "Classics" },
+            { q: "If your life had a theme song, what would it be?", cat: "Vibes" },
+            { q: "What's something you're proud of that you don't talk about much?", cat: "Deep Cuts" },
+            { q: "What's the best piece of advice you've ever gotten?", cat: "Deep Cuts" },
+            { q: "What would you title your autobiography?", cat: "Spicy" },
+        ];
+
+        let currentIndex = 0;
+        const themes = ['theme-1', 'theme-2', 'theme-3', 'theme-4', 'theme-5'];
+        let currentTheme = 0;
+
+        const questionEl = document.getElementById('question');
+        const categoryEl = document.getElementById('category');
+        const counterEl = document.getElementById('counter');
+
+        function updateDisplay(direction = 'next') {
+            // Exit animation
+            questionEl.classList.add('exiting');
+            categoryEl.classList.add('exiting');
+
+            setTimeout(() => {
+                questionEl.textContent = questions[currentIndex].q;
+                categoryEl.textContent = questions[currentIndex].cat;
+                counterEl.textContent = `${currentIndex + 1} / ${questions.length}`;
+
+                questionEl.classList.remove('exiting');
+                questionEl.classList.add('entering');
+                categoryEl.classList.remove('exiting');
+
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        questionEl.classList.remove('entering');
+                    });
+                });
+            }, 150);
+
+            // Cycle theme
+            document.body.classList.remove(themes[currentTheme]);
+            currentTheme = (currentTheme + 1) % themes.length;
+            document.body.classList.add(themes[currentTheme]);
+        }
+
+        function nextQuestion() {
+            currentIndex = (currentIndex + 1) % questions.length;
+            updateDisplay('next');
+        }
+
+        function prevQuestion() {
+            currentIndex = (currentIndex - 1 + questions.length) % questions.length;
+            updateDisplay('prev');
+        }
+
+        function shuffleQuestions() {
+            for (let i = questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [questions[i], questions[j]] = [questions[j], questions[i]];
+            }
+            currentIndex = 0;
+            updateDisplay('next');
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextQuestion();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevQuestion();
+            } else if (e.key === 's' || e.key === 'S') {
+                shuffleQuestions();
+            }
+        });
+
+        // Touch swipe support
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextQuestion();
+                else prevQuestion();
+            }
+        });
+    </script>
+</body>
+</html>
