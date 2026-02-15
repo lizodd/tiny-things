@@ -278,6 +278,80 @@
             animation: spin 20s linear infinite;
         }
 
+        /* Wacky extra shapes – subtle */
+        .deco-triangle {
+            width: 0;
+            height: 0;
+            border-left: 80px solid transparent;
+            border-right: 80px solid transparent;
+            border-bottom: 140px solid var(--accent);
+            opacity: 0.05;
+            top: 30%;
+            left: -40px;
+            transform: rotate(-15deg);
+        }
+
+        .deco-blob {
+            width: 180px;
+            height: 120px;
+            background: var(--text);
+            border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%;
+            opacity: 0.04;
+            top: 50%;
+            right: -30px;
+            transform: rotate(25deg);
+        }
+
+        .deco-diamond {
+            width: 100px;
+            height: 100px;
+            background: var(--accent);
+            transform: rotate(45deg);
+            opacity: 0.05;
+            top: 15%;
+            right: 25%;
+        }
+
+        .deco-squiggle {
+            width: 120px;
+            height: 40px;
+            border: 4px solid var(--text);
+            border-radius: 50%;
+            opacity: 0.05;
+            bottom: 25%;
+            left: 15%;
+            transform: rotate(-20deg);
+        }
+
+        .deco-star-2 {
+            font-size: 5rem;
+            opacity: 0.03;
+            top: 60%;
+            left: 10%;
+            color: var(--accent);
+            animation: spin 25s linear infinite reverse;
+        }
+
+        .deco-plus {
+            width: 4px;
+            height: 80px;
+            background: var(--text);
+            opacity: 0.04;
+            top: 20%;
+            right: 15%;
+            transform: rotate(-30deg);
+        }
+
+        .deco-plus::after {
+            content: "";
+            position: absolute;
+            left: -38px;
+            top: 38px;
+            width: 80px;
+            height: 4px;
+            background: var(--text);
+        }
+
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
@@ -416,6 +490,46 @@
                 bottom: 40px;
                 right: 20px;
             }
+
+            .deco-triangle {
+                border-left-width: 50px;
+                border-right-width: 50px;
+                border-bottom-width: 90px;
+                left: -50px;
+            }
+
+            .deco-blob {
+                width: 100px;
+                height: 70px;
+                right: -40px;
+            }
+
+            .deco-diamond {
+                width: 60px;
+                height: 60px;
+                right: 15%;
+            }
+
+            .deco-squiggle {
+                width: 70px;
+                height: 24px;
+                left: 5%;
+            }
+
+            .deco-star-2 {
+                font-size: 2.5rem;
+                left: 5%;
+            }
+
+            .deco-plus {
+                height: 50px;
+            }
+
+            .deco-plus::after {
+                left: -23px;
+                top: 23px;
+                width: 50px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -489,6 +603,43 @@
                 bottom: 24px;
                 right: 10px;
             }
+
+            .deco-triangle {
+                border-left-width: 35px;
+                border-right-width: 35px;
+                border-bottom-width: 60px;
+                left: -45px;
+            }
+
+            .deco-blob {
+                width: 70px;
+                height: 50px;
+                right: -50px;
+            }
+
+            .deco-diamond {
+                width: 40px;
+                height: 40px;
+            }
+
+            .deco-squiggle {
+                width: 50px;
+                height: 18px;
+            }
+
+            .deco-star-2 {
+                font-size: 1.75rem;
+            }
+
+            .deco-plus {
+                height: 36px;
+            }
+
+            .deco-plus::after {
+                left: -18px;
+                top: 16px;
+                width: 36px;
+            }
         }
 
         /* Extra-small viewports (e.g. narrow phones) */
@@ -529,6 +680,12 @@
     <div class="deco deco-circle"></div>
     <div class="deco deco-circle-2"></div>
     <div class="deco deco-star">✹</div>
+    <div class="deco deco-triangle"></div>
+    <div class="deco deco-blob"></div>
+    <div class="deco deco-diamond"></div>
+    <div class="deco deco-squiggle"></div>
+    <div class="deco deco-star-2">✦</div>
+    <div class="deco deco-plus"></div>
 
     <header>
         <div class="header-left">
