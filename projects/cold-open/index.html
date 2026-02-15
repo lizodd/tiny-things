@@ -11,6 +11,8 @@
             --text: #1A0BF5;
             --accent: #FF2D6B;
             --white: #FFFEF5;
+            /* Text on accent: light for dark accents, dark for light accents (WCAG AA) */
+            --accent-text: #FFFEF5;
         }
 
         * {
@@ -19,36 +21,63 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+        }
+
         body {
             font-family: 'Space Grotesk', sans-serif;
             background-color: var(--bg);
             color: var(--text);
             min-height: 100vh;
+            max-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: auto;
+            overflow: hidden;
             user-select: none;
             cursor: crosshair;
+            /* Reserve space so fixed hint doesn't cover nav */
+            padding-bottom: 36px;
         }
 
-        /* Header */
+        /* Header - solid background so it never shows content through; never shrinks */
         header {
             padding: 24px 50px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 16px;
             position: relative;
             z-index: 10;
+            flex-shrink: 0;
+            min-width: 0;
+            background: var(--bg);
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
         }
 
         .logo {
             font-family: 'Anybody', sans-serif;
             font-weight: 900;
-            font-style: italic;
             font-size: 1.6rem;
             text-transform: uppercase;
             letter-spacing: -0.02em;
             line-height: 1;
+            flex-shrink: 0;
+            min-width: 0;
         }
 
         .back-link {
@@ -61,6 +90,8 @@
             text-decoration: none;
             opacity: 0.6;
             transition: opacity 0.15s ease;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
         .back-link:hover {
@@ -76,36 +107,47 @@
             padding: 6px 14px;
             border-radius: 100px;
             letter-spacing: 0.05em;
+            flex-shrink: 0;
         }
 
-        /* Main content */
+        /* Main content - scrolls when question is tall; content stays below header */
         main {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 32px 50px;
             position: relative;
+            min-width: 0;
+            min-height: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
-        /* Question display */
+        /* Question display - centered when space allows, stays in view when tight */
         .question-container {
             text-align: center;
             max-width: 900px;
+            width: 100%;
             position: relative;
+            min-width: 0;
+            margin-top: auto;
+            margin-bottom: auto;
         }
 
+        /* Scale with both width and height so question always fits in view */
         .question-text {
             font-family: 'Anybody', sans-serif;
             font-weight: 900;
-            font-style: italic;
-            font-size: clamp(3rem, 8vw, 7rem);
+            font-size: clamp(1rem, min(8vw, 10vh), 7rem);
             line-height: 0.95;
             text-transform: uppercase;
             letter-spacing: -0.03em;
             color: var(--text);
             transition: opacity 0.15s ease, transform 0.15s ease;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
 
         .question-text.exiting {
@@ -118,16 +160,7 @@
             transform: translateY(-20px);
         }
 
-        /* Decorative accent line */
-        .accent-line {
-            width: 60px;
-            height: 6px;
-            background: var(--accent);
-            border-radius: 3px;
-            margin: 0 auto 32px;
-        }
-
-        /* Category tag */
+        /* Category tag - uses --accent-text for accessible contrast on accent bg */
         .category {
             display: inline-block;
             font-size: 0.75rem;
@@ -135,10 +168,10 @@
             text-transform: uppercase;
             letter-spacing: 0.15em;
             background: var(--accent);
-            color: var(--white);
+            color: var(--accent-text);
             padding: 6px 16px;
             border-radius: 100px;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
             transition: opacity 0.15s ease;
         }
 
@@ -146,15 +179,19 @@
             opacity: 0;
         }
 
-        /* Navigation */
+        /* Navigation - centered on page */
         nav {
             padding: 24px 50px 32px;
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-wrap: wrap;
             gap: 20px;
             position: relative;
             z-index: 10;
+            flex-shrink: 0;
+            min-width: 0;
+            width: 100%;
         }
 
         .nav-btn {
@@ -164,8 +201,8 @@
             text-transform: uppercase;
             letter-spacing: 0.1em;
             border: 3px solid var(--text);
-            background: transparent;
-            color: var(--text);
+            background: var(--text);
+            color: var(--bg);
             padding: 14px 32px;
             border-radius: 100px;
             cursor: pointer;
@@ -175,25 +212,13 @@
         }
 
         .nav-btn:hover {
-            background: var(--text);
-            color: var(--bg);
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--accent-text);
         }
 
         .nav-btn:active {
             transform: scale(0.96);
-        }
-
-        .nav-btn.primary {
-            background: var(--text);
-            color: var(--bg);
-            padding: 14px 40px;
-            font-size: 0.95rem;
-        }
-
-        .nav-btn.primary:hover {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: var(--white);
         }
 
         .shuffle-btn {
@@ -283,35 +308,40 @@
             margin: 0 2px;
         }
 
-        /* Color shift on theme change */
+        /* Color shift on theme change - --accent-text ensures WCAG AA contrast on accent */
         body.theme-1 {
             --bg: #D2FF3A;
             --text: #1A0BF5;
             --accent: #FF2D6B;
+            --accent-text: #FFFEF5;
         }
 
         body.theme-2 {
             --bg: #FF2D6B;
             --text: #FFFEF5;
             --accent: #D2FF3A;
+            --accent-text: #1A1A1A;
         }
 
         body.theme-3 {
             --bg: #1A0BF5;
             --text: #D2FF3A;
             --accent: #FF2D6B;
+            --accent-text: #FFFEF5;
         }
 
         body.theme-4 {
             --bg: #FFFEF5;
             --text: #1A0BF5;
             --accent: #FF2D6B;
+            --accent-text: #FFFEF5;
         }
 
         body.theme-5 {
             --bg: #FF8C00;
             --text: #1A0044;
             --accent: #D2FF3A;
+            --accent-text: #1A1A1A;
         }
 
         body {
@@ -323,17 +353,38 @@
         }
 
         @media (max-width: 768px) {
+            body {
+                padding-bottom: 0;
+            }
+
             header {
                 padding: 20px 24px;
             }
 
+            .logo {
+                font-size: 1.3rem;
+            }
+
             main {
-                padding: 24px;
+                padding: 20px 20px;
+            }
+
+            .question-container {
+                margin: 0 auto;
+                padding: 0 0 16px;
+            }
+
+            .question-text {
+                font-size: clamp(1rem, min(7vw, 9vh), 4.5rem);
+            }
+
+            .category {
+                margin-bottom: 32px;
             }
 
             nav {
                 padding: 20px 24px 28px;
-                flex-wrap: wrap;
+                gap: 12px;
             }
 
             .nav-btn {
@@ -341,31 +392,133 @@
                 font-size: 0.8rem;
             }
 
-            .nav-btn.primary {
-                padding: 12px 32px;
-                font-size: 0.85rem;
-            }
-
             .hint {
                 display: none;
+            }
+
+            /* Scale decorative elements so they don't overlap content */
+            .deco-circle {
+                width: 180px;
+                height: 180px;
+                top: -100px;
+                right: -100px;
+            }
+
+            .deco-circle-2 {
+                width: 120px;
+                height: 120px;
+                bottom: 20px;
+                left: -80px;
+            }
+
+            .deco-star {
+                font-size: 4rem;
+                bottom: 40px;
+                right: 20px;
             }
         }
 
         @media (max-width: 480px) {
             header {
-                padding: 16px 20px;
+                padding: 16px 16px;
+                gap: 8px;
+            }
+
+            .logo {
+                font-size: 1.1rem;
+            }
+
+            .back-link {
+                font-size: 0.7rem;
+            }
+
+            .counter-badge {
+                font-size: 0.7rem;
+                padding: 5px 10px;
             }
 
             main {
-                padding: 20px;
+                padding: 16px 16px;
+            }
+
+            .question-container {
+                padding: 0 0 12px;
             }
 
             nav {
-                padding: 16px 20px 24px;
+                padding: 16px 16px 24px;
+                gap: 10px;
             }
 
             .question-text {
-                font-size: clamp(2rem, 10vw, 4rem);
+                font-size: clamp(0.875rem, min(8vw, 8vh), 3rem);
+            }
+
+            .category {
+                font-size: 0.65rem;
+                padding: 5px 12px;
+                margin-bottom: 24px;
+            }
+
+            .nav-btn {
+                padding: 10px 20px;
+                font-size: 0.75rem;
+            }
+
+            .shuffle-btn {
+                font-size: 0.7rem;
+            }
+
+            /* Decorative elements smaller and pushed off-screen on very small viewports */
+            .deco-circle {
+                width: 120px;
+                height: 120px;
+                top: -80px;
+                right: -80px;
+            }
+
+            .deco-circle-2 {
+                width: 80px;
+                height: 80px;
+                bottom: 10px;
+                left: -60px;
+            }
+
+            .deco-star {
+                font-size: 2.5rem;
+                bottom: 24px;
+                right: 10px;
+            }
+        }
+
+        /* Extra-small viewports (e.g. narrow phones) */
+        @media (max-width: 360px) {
+            header {
+                padding: 12px 12px;
+            }
+
+            .logo {
+                font-size: 1rem;
+            }
+
+            main {
+                padding: 12px 12px;
+            }
+
+            .question-container {
+                padding: 0 0 8px;
+            }
+
+            .question-text {
+                font-size: clamp(0.75rem, min(7vw, 7vh), 2.5rem);
+            }
+
+            .category {
+                margin-bottom: 20px;
+            }
+
+            nav {
+                padding: 12px 12px 20px;
             }
         }
     </style>
@@ -378,63 +531,34 @@
     <div class="deco deco-star">✹</div>
 
     <header>
-        <div class="logo">Cold Open</div>
-        <a href="../../index.html" class="back-link">← Back</a>
-        <div class="counter-badge" id="counter">1 / 30</div>
+        <div class="header-left">
+            <a href="../../index.html" class="back-link">← Back</a>
+            <div class="header-row">
+                <div class="logo">Cold Open</div>
+                <div class="counter-badge" id="counter">1 / 30</div>
+            </div>
+        </div>
     </header>
 
     <main>
         <div class="question-container">
             <div class="category" id="category">Getting Started</div>
-            <div class="accent-line"></div>
             <div class="question-text" id="question">What's something you changed your mind about recently?</div>
         </div>
     </main>
 
     <nav>
         <button class="nav-btn" id="prevBtn" onclick="prevQuestion()">← Prev</button>
-        <button class="nav-btn primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
         <button class="shuffle-btn" onclick="shuffleQuestions()">Shuffle</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next →</button>
     </nav>
 
     <div class="hint">
         <kbd>←</kbd> <kbd>→</kbd> to navigate · <kbd>S</kbd> to shuffle
     </div>
 
+    <script src="questions.js"></script>
     <script>
-        const questions = [
-            { q: "What's something you changed your mind about recently?", cat: "Getting Started" },
-            { q: "What's the worst advice you've ever received?", cat: "Getting Started" },
-            { q: "What's a hill you will die on?", cat: "Spicy" },
-            { q: "What's your most unpopular opinion?", cat: "Spicy" },
-            { q: "If you could only eat one cuisine for the rest of your life, what would it be?", cat: "Classics" },
-            { q: "What's a skill you'd love to learn but haven't started?", cat: "Getting Started" },
-            { q: "What's the last thing that made you laugh until you cried?", cat: "Vibes" },
-            { q: "What's your go-to karaoke song?", cat: "Vibes" },
-            { q: "What's a movie you can quote from start to finish?", cat: "Classics" },
-            { q: "What would your entrance music be?", cat: "Vibes" },
-            { q: "What's the most overrated thing in your industry?", cat: "Spicy" },
-            { q: "What's a random fact you know that impresses people at parties?", cat: "Classics" },
-            { q: "If you had to teach a class on any topic, what would it be?", cat: "Deep Cuts" },
-            { q: "What's the best purchase you've made under $50?", cat: "Classics" },
-            { q: "What's something you're weirdly competitive about?", cat: "Vibes" },
-            { q: "What's a conspiracy theory you find entertaining?", cat: "Spicy" },
-            { q: "What did you want to be when you grew up?", cat: "Deep Cuts" },
-            { q: "What's the most interesting rabbit hole you've gone down recently?", cat: "Deep Cuts" },
-            { q: "What's your toxic trait?", cat: "Spicy" },
-            { q: "If you could have dinner with anyone, living or dead, who would it be?", cat: "Deep Cuts" },
-            { q: "What's something that's on your bucket list?", cat: "Getting Started" },
-            { q: "What's the best concert or live event you've ever been to?", cat: "Vibes" },
-            { q: "What would you do with an extra hour every day?", cat: "Deep Cuts" },
-            { q: "What's a trend you don't understand?", cat: "Spicy" },
-            { q: "What's the most spontaneous thing you've ever done?", cat: "Vibes" },
-            { q: "What's the weirdest food combination you love?", cat: "Classics" },
-            { q: "If your life had a theme song, what would it be?", cat: "Vibes" },
-            { q: "What's something you're proud of that you don't talk about much?", cat: "Deep Cuts" },
-            { q: "What's the best piece of advice you've ever gotten?", cat: "Deep Cuts" },
-            { q: "What would you title your autobiography?", cat: "Spicy" },
-        ];
-
         let currentIndex = 0;
         const themes = ['theme-1', 'theme-2', 'theme-3', 'theme-4', 'theme-5'];
         let currentTheme = 0;
